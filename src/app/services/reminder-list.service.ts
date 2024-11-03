@@ -22,4 +22,11 @@ export class ReminderListService {
     return this.firestore.collection('reminders').add(reminder);
   }
 
+  // Actualizar un recordatorio existente
+  updateReminder(reminder: any) {
+    const reminderId = reminder.id; // Asumimos que cada recordatorio tiene un campo 'id' único
+    delete reminder.id; // Eliminamos el 'id' antes de la actualización
+
+    return this.firestore.collection('reminders').doc(reminderId).update(reminder);
+  }
 }

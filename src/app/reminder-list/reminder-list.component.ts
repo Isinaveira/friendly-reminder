@@ -1,21 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReminderListService } from '../services/reminder-list.service';
 import { Observable, map, switchMap } from 'rxjs';
 import { UserService } from '../services/user.service';
+
 @Component({
   selector: 'app-reminder-list',
   templateUrl: './reminder-list.component.html',
   styleUrl: './reminder-list.component.css',
 })
-export class ReminderListComponent {
+export class ReminderListComponent implements OnInit {
   reminders$!: Observable<any[]>;
   remindersAssignedToMe!: Observable<any[]>;
   remindersAssigned!: Observable<any[]>;
   remindersCompleted!: Observable<any[]>;
   newReminders!: Observable<any[]>;
-  expandedReminderIndex: number | null = null; //Cambia el índice expandido
+  expandedReminderIndex: number | null = null;
   showModal = false;
-  draggedReminder!: any;
+  draggedReminderIndex!: number;
+  remindersList: any[] = []; // Lista local de recordatorios
 
   constructor(
     private readonly reminderListService: ReminderListService,
@@ -23,19 +25,24 @@ export class ReminderListComponent {
   ) {}
 
   ngOnInit() {
+    // Obtener los recordatorios desde el servicio y almacenarlos en remindersList
     this.reminders$ = this.reminderListService.getReminders();
+    this.reminders$.subscribe((reminders) => {
+      this.remindersList = reminders; // Guardamos los recordatorios en una lista local
+    });
 
+    // Filtrado para recordatorios específicos del usuario
     this.userService.userId$
       .pipe(
         switchMap((userId) => {
-          //Filtramos la lista de reminders por las que están asignadas al usuario
+          // Filtrar recordatorios asignados al usuario actual
           this.remindersAssignedToMe = this.reminders$.pipe(
             map((reminders) =>
               reminders.filter((reminder) => reminder.assignedTo === userId)
             )
           );
 
-          //Filtramos la lista de reminders por las que no están asignadas al usuario
+          // Filtrar recordatorios asignados a otros usuarios
           this.remindersAssigned = this.reminders$.pipe(
             map((reminders) =>
               reminders.filter(
@@ -45,19 +52,19 @@ export class ReminderListComponent {
             )
           );
 
+          // Filtrar recordatorios sin asignar
           this.newReminders = this.reminders$.pipe(
             map((reminders) =>
               reminders.filter((reminder) => reminder.assignedTo == '')
             )
           );
 
-          //retornamos un observable vacío ya que los filtros ya se han aplicado
           return this.reminders$;
         })
       )
       .subscribe();
 
-    //Filtramos la lista de reminders completados
+    // Filtrar recordatorios completados
     this.remindersCompleted = this.reminders$.pipe(
       map((reminders) =>
         reminders.filter((reminder) => reminder.status == 'completed')
@@ -76,8 +83,8 @@ export class ReminderListComponent {
   }
 
   drag(event: DragEvent, index: number) {
-    this.draggedReminder = index;
-    event.dataTransfer?.setData('text/plain', String(index)); // Gurda el índice en el dataTransfer
+    this.draggedReminderIndex = index;
+    event.dataTransfer?.setData('text/plain', String(index));
   }
 
   allowDrop(event: DragEvent) {
@@ -86,33 +93,23 @@ export class ReminderListComponent {
 
   drop(event: DragEvent, listType: string) {
     event.preventDefault();
-  
-    const fromIndex = this.draggedReminder;
-    let remindersList: any[];
-  
-    // Obtén la lista de recordatorios desde el Observable
-    this.reminders$.subscribe((reminders) => {
-      remindersList = reminders; // Aquí guardamos los recordatorios en un array
-  
-      const movedReminder = remindersList[fromIndex];
-  
-      // Aquí controlamos si se puede mover el recordatorio a la nueva lista
-      if (listType === 'assignedToMe' && movedReminder.status === 'new') {
-        // Lógica para mover a 'Assigned to me'
-        movedReminder.assignedTo = 'user_id'; // Cambia esto según tu lógica
-      } else if (listType === 'completed') {
-        // Lógica para mover a 'Completed'
-        movedReminder.status = 'completed'; // Cambia el estado
-      } else {
-        // Si no se permite el movimiento, no hacemos nada
-        return;
-      }
-  
-      // Eliminar el recordatorio de la lista original
-      remindersList.splice(fromIndex, 1);
-  
-      // Aquí puedes llamar a un método en tu servicio para actualizar la base de datos si es necesario
-    });
+
+    const fromIndex = this.draggedReminderIndex;
+    const movedReminder = this.remindersList[fromIndex];
+
+    // Verificar si el movimiento es válido y actualizar el recordatorio
+    if (listType === 'assignedToMe' && movedReminder.status === 'new') {
+      movedReminder.assignedTo = 'user_id'; // Cambia 'user_id' con el ID real del usuario
+    } else if (listType === 'completed') {
+      movedReminder.status = 'completed';
+    } else {
+      return; // No hacer nada si el movimiento no es permitido
+    }
+
+    // Remover el recordatorio de su lista original
+    this.remindersList.splice(fromIndex, 1);
+
+    // Llamar al servicio para actualizar el backend
+    this.reminderListService.updateReminder(movedReminder);
   }
-  
 }
