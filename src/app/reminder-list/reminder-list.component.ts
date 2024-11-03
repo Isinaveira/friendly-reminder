@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ReminderListService } from '../services/reminder-list.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, map, switchMap } from 'rxjs';
 import { UserService } from '../services/user.service';
 @Component({
