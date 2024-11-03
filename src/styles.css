@@ -1,1 +1,47 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(45deg, #1a022e, #3c0427, #700447);
+}
+
+.font-black {
+  color: black;
+}
+.section_name {
+  font-weight: 400;
+}
+
+.label_name {
+  font-size: 1.5rem;
+}
+
+.input-field {
+  height: 2rem;
+  font-size: 1rem;
+}
+input:focus,
+textarea:focus {
+    outline: none;
+}
+
+.border-radius {
+    border-radius: 10px;
+}
+
+.division-line {
+  width: 3px;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.416);
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

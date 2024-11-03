@@ -1,0 +1,15 @@
+<div class="nav-wrapper">
+  <div class="sections">
+    <a class="name_logo" href="/">friendly reminder</a>
+  </div>
+  <div class="session_controls">
+    @if(user){
+    <div class="logged_in">
+      <p>Welcome, {{ user.displayName }}!</p>
+      <button (click)="logout()"><span class="material-icons">logout</span></button>
+    </div>
+    } @if(!user){
+    <button (click)="login()">Login with Google</button>
+    }
+  </div>
+</div>

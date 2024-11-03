@@ -1,0 +1,81 @@
+<div class="wrapper">
+    <div class="section-navbar">
+        <h2 class="section_name"> Task list</h2>
+        <div class="section-controls">
+            <button (click)="toggleModal()">Add Reminder</button>
+        </div>
+    </div>
+    <div class="reminder-list-sections">
+        <div class="reminder-list-section">
+            <h3>New tasks</h3>
+            <ul class="reminder-list">
+                @for(reminder of reminders$ | async; track $index){
+                    <li class="reminder-card" draggable="true" (dragstart)="drag($event, $index)" (click)="toggleReminder($index)">
+                        <h2>{{reminder.title}}</h2>
+                        @if(expandedReminderIndex === $index){
+                            <div class="reminder-content">
+                                <p>{{reminder.content}}</p>
+                            </div>
+                        }@else {
+                            <p>{{reminder.content}}</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="reminder-list-section">
+            <h3>Assigned tasks</h3>
+            <ul class="reminder-list">
+                @for(reminder of remindersAssigned | async; track $index){
+                    <li class="reminder-card" (click)="toggleReminder($index)">
+                        <h2>{{reminder.title}}</h2>
+                        @if(expandedReminderIndex === $index){
+                            <div class="reminder-content">
+                                <p>{{reminder.content}}</p>
+                            </div>
+                        }@else {
+                            <p>{{reminder.content}}</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="reminder-list-section">
+            <h3>Assigned to me</h3>
+            <ul class="reminder-list">
+                @for(reminder of remindersAssignedToMe | async; track $index){
+                    <li class="reminder-card" (click)="toggleReminder($index)">
+                        <h2>{{reminder.title}}</h2>
+                        @if(expandedReminderIndex === $index){
+                            <div class="reminder-content">
+                                <p>{{reminder.content}}</p>
+                            </div>
+                        }@else {
+                            <p>{{reminder.content}}</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="reminder-list-section">
+            <h3>Completed</h3>
+            <ul class="reminder-list">
+                @for(reminder of remindersCompleted | async; track $index){
+                    <li class="reminder-card" (click)="toggleReminder($index)">
+                        <h2>{{reminder.title}}</h2>
+                        @if(expandedReminderIndex === $index){
+                            <div class="reminder-content">
+                                <p>{{reminder.content}}</p>
+                            </div>
+                        }@else {
+                            <p>{{reminder.content}}</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    @if(showModal){
+        <app-reminder-modal (close)="toggleModal()"></app-reminder-modal>
+    }
+</div>

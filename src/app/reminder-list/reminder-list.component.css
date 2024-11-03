@@ -1,0 +1,90 @@
+.wrapper {
+    padding: 1rem;
+}
+
+.section-navbar {
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+}
+
+.reminder-list-sections {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.reminder-list-section {
+    width: 20%;
+    border-left: 3px solid rgba(255, 255, 255, 0.29);
+}
+
+.reminder-list-section:first-child {
+    border-left: none;
+}
+
+.reminder-list-section h3 {
+    margin-left: 10px;
+}
+
+.reminder-list {
+    list-style: none;
+    width: calc(100% + 20px); /* Ajusta para dejar espacio para la barra de desplazamiento */
+    padding: 0 0.8rem;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+/* Muestra la barra de desplazamiento solo al hacer hover */
+.reminder-list:hover {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/* Personalización de la barra de desplazamiento para navegadores WebKit */
+.reminder-list::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra de desplazamiento */
+}
+
+.reminder-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1); /* Fondo del track */
+}
+
+.reminder-list::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3); /* Color de la barra */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.reminder-card {
+    background-color: rgba(255, 255, 255, 0.283);
+    width: calc(100% - 20px); /* Ajusta para mantener el mismo tamaño al aparecer la barra de desplazamiento */
+    padding: 0.5rem;
+    border-radius: 10px;
+    color: white;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.reminder-card:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: solid 1px white;
+    scale: 1.01;
+}
+
+.reminder-content {
+    padding: 1rem; /* Espacio adicional alrededor del contenido expandido */
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo adicional */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-top: 0.5rem; /* Margen superior para separación */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
