@@ -86,46 +86,33 @@ export class ReminderListComponent {
 
   drop(event: DragEvent, listType: string) {
     event.preventDefault();
-
+  
     const fromIndex = this.draggedReminder;
-
     let remindersList: any[];
-    let targetList: Observable<any[]>;
-
+  
     // Obtén la lista de recordatorios desde el Observable
     this.reminders$.subscribe((reminders) => {
       remindersList = reminders; // Aquí guardamos los recordatorios en un array
-
-      switch (listType) {
-        case 'newReminders':
-          targetList = this.reminders$; // Puedes crear un Observable específico si lo necesitas
-          break;
-        case 'assignedTasks':
-          targetList = this.remindersAssigned;
-          break;
-        case 'assignedToMe':
-          targetList = this.remindersAssignedToMe;
-          break;
-        case 'completed':
-          targetList = this.remindersCompleted;
-          break;
-        default:
-          return;
+  
+      const movedReminder = remindersList[fromIndex];
+  
+      // Aquí controlamos si se puede mover el recordatorio a la nueva lista
+      if (listType === 'assignedToMe' && movedReminder.status === 'new') {
+        // Lógica para mover a 'Assigned to me'
+        movedReminder.assignedTo = 'user_id'; // Cambia esto según tu lógica
+      } else if (listType === 'completed') {
+        // Lógica para mover a 'Completed'
+        movedReminder.status = 'completed'; // Cambia el estado
+      } else {
+        // Si no se permite el movimiento, no hacemos nada
+        return;
       }
-
-      // Lógica para mover el recordatorio a la nueva lista
-      if (remindersList && remindersList.length > 0) {
-        const movedReminder = remindersList[fromIndex];
-
-        // Eliminar el recordatorio de la lista original
-        remindersList.splice(fromIndex, 1);
-
-        // Aquí deberías agregar el recordatorio a la nueva lista
-        // Esto puede implicar un método en tu servicio para actualizar la base de datos
-        // Por ejemplo: this.reminderListService.updateReminders(updatedList);
-
-        // Asegúrate de actualizar también la UI después de hacer los cambios en la base de datos
-      }
+  
+      // Eliminar el recordatorio de la lista original
+      remindersList.splice(fromIndex, 1);
+  
+      // Aquí puedes llamar a un método en tu servicio para actualizar la base de datos si es necesario
     });
   }
+  
 }

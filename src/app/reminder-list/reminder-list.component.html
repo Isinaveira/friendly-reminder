@@ -42,7 +42,7 @@
         </div>
         <div class="reminder-list-section">
             <h3>Assigned to me</h3>
-            <ul class="reminder-list">
+            <ul class="reminder-list" (drop)="drop($event, 'assignedToMe')" (dragover)="allowDrop($event)">
                 @for(reminder of remindersAssignedToMe | async; track $index){
                     <li class="reminder-card" (click)="toggleReminder($index)">
                         <h2>{{reminder.title}}</h2>
@@ -59,7 +59,7 @@
         </div>
         <div class="reminder-list-section">
             <h3>Completed</h3>
-            <ul class="reminder-list">
+            <ul class="reminder-list" (drop)="drop($event, 'completed')" (dragover)="allowDrop($event)">
                 @for(reminder of remindersCompleted | async; track $index){
                     <li class="reminder-card" (click)="toggleReminder($index)">
                         <h2>{{reminder.title}}</h2>
